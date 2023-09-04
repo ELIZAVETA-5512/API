@@ -1,7 +1,6 @@
 import requests
 import json
 
-# Исходные данные
 list_heroes = ["Hulk", "Captain America", "Thanos"]
 token = "2619421814940190"
 power = 'intelligence'
@@ -36,5 +35,5 @@ def rate_hero(heroes_list, token, power):
     pass
 
 
-# Собственно программа
+# Программа
 print(rate_hero(list_heroes, token, power))

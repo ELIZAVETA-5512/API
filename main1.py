@@ -5,7 +5,7 @@ import json
 
 file_name = "Test1.docx"
 test_file_path = 'C:\\Test\\' + file_name
-current_token = 
+current_token = ...
 
 
 class YaUploader:
