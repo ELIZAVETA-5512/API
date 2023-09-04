@@ -1,39 +1,27 @@
 import requests
-import json
+from pprint import pprint
 
-list_heroes = ["Hulk", "Captain America", "Thanos"]
-token = "2619421814940190"
-power = 'intelligence'
+BASE_URL = "https://akabab.github.io/superhero-api/api"
 
 
-# Вводим функцию сравнения
-def rate_hero(heroes_list, token, power):
-    # Только для этого сайта
-    url = "https://superheroapi.com/api"
-    search = "/search/"
-    power_stats = "/powerstats"
-    heroes_dict_for_compare = {}
-
-    # Ищем ID всех героев
-    for hero in heroes_list:
-        response_for_id = requests.get(url + "/" + token + search + hero)
-        id_data = json.loads(response_for_id.content)
-        hero_id = id_data["results"][0]['id']
-
-        # Ищем статистику  всех героев
-        response_for_power_stats = requests.get(url + "/" + token + "/" + hero_id + power_stats)
-        stats = json.loads(response_for_power_stats.content)
-
-        heroes_dict_for_compare[int(stats[power])] = hero
-
-    # Сортируем список
-    sorted_heroes_dict = sorted(heroes_dict_for_compare.items())
-
-    # Выводим резельтат сравинения
-    for number, hero in enumerate(reversed(sorted_heroes_dict)):
-        print(f'{number + 1} place - {hero[1]}, {power} = {hero[0]}')
-    pass
+def search_power_get(search_name, search_power='intelligence'):
+    list_power = list()
+    for i in search_name:
+        url = BASE_URL + "search/" + i
+        response_character = requests.get(url, timeout=5).json()["results"][0]
+        list_power.append({'id': response_character["id"],
+                           'name': response_character["name"],
+                           'intelligence': int(response_character["powerstats"][search_power])})
+    return list_power
 
 
-# Программа
-print(rate_hero(list_heroes, token, power))
+if __name__ == '__main__':
+    search_hero = ['Hulk', 'Captain America', 'Thanos']
+    power = 'intelligence'
+    results = search_power_get(search_hero, power)
+    pprint(results)
+    max_power = {'id': 0, 'name': 'none', power: 0}
+    for hero in results:
+        if max_power[power] < hero[power]:
+            max_power = hero
+    print(f'\nГерой {max_power["name"]} с максимальным уровнем {power} = {max_power[power]}.')
